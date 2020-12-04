@@ -13,7 +13,7 @@ func TestDomainCreate(t *testing.T) {
 	//
 
 	var domain = new(models.Domain)
-	domain.Name = "localhost"
+	domain.Name = "localhost2"
 	domain.Note = "本地"
 	outDomain, err := models.CreateDomain(domain)
 	if err != nil {
@@ -24,11 +24,13 @@ func TestDomainCreate(t *testing.T) {
 
 func TestDomainUpdate(t *testing.T) {
 	//
-
-	var domain = new(models.Domain)
-	domain.Name = "localhost"
+	domain, err := models.GetDomainByID(1)
+	if err != nil {
+		assert.Equal(t, 1, 0)
+	}
 	domain.Note = "本地222"
-	outDomain, err := models.UpdateDomain(domain)
+	domain.UserID = 1
+	outDomain, err := models.SaveDomain(domain)
 	if err != nil {
 		fmt.Printf("Error:%s\n", err.Error())
 	}
@@ -37,7 +39,6 @@ func TestDomainUpdate(t *testing.T) {
 
 func TestDomainGetByID(t *testing.T) {
 	//
-
 	outDomain, err := models.GetDomainByID(1)
 	if err != nil {
 		fmt.Printf("Error:%s\n", err.Error())
@@ -48,7 +49,6 @@ func TestDomainGetByID(t *testing.T) {
 func TestDomainDeleteByID(t *testing.T) {
 	//
 	ok, _ := models.DeleteDomainByID(1)
-
 	if !ok {
 		assert.Equal(t, 1, 0)
 	} else {

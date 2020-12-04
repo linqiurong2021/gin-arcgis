@@ -6,15 +6,18 @@ import (
 )
 
 // 逻辑
-// RequestURL 与 Domain 是多对多关系  一个请求URL可对应多个域名  一个域名也可请求多个URL
-// WhiteURL 授权域名可访问的URL
+// URL 与 Domain 是多对多关系  一个请求URL可对应多个域名  一个域名也可请求多个URL
+// dev.eginsoft.cn   localhost/dev.eginsoft.cn/127.0.0.1
+// 127.0.0.1  dev.eginsoft.cn/gis.eginsoft.cn/www.eginsoft.cn
+// URL 授权域名可访问的URL
 
 // Domain 白名单
 type Domain struct {
 	gorm.Model
-	Name  string  `json:"domain" gorm:"domain" bind:"required" label:"域名或ip"`
-	Note  string  `json:"note" gorm:"note" bind:"required" label:"备注"`
-	Paths []*Path `json:"paths" gorm:"many2many:domain_url;ForeignKey:id;References:id"`
+	Name   string `json:"domain" gorm:"domain;unique" bind:"required" label:"域名或ip"`
+	Note   string `json:"note" gorm:"note" bind:"required" label:"备注"`
+	UserID uint   `json:"user_id" gorm:"user_id" label:"用户ID"`
+	URLs   []URL  `json:"domain_urls" gorm:"many2many:domain_urls;"`
 }
 
 // CreateDomain 创建域名
@@ -35,19 +38,56 @@ func GetDomainByID(DomainID uint) (outDomain *Domain, err error) {
 	return Domain, nil
 }
 
+// GetDomainByName 通过ID获取域名信息
+func GetDomainByName(name string) (outDomain *Domain, err error) {
+	var Domain = new(Domain)
+	if err := mysql.DB.Where("name = ?", name).First(&Domain).Error; err != nil {
+		return nil, err
+	}
+	return Domain, nil
+}
+
 // UpdateDomain 更新数据
 func UpdateDomain(inDomain *Domain) (outDomain *Domain, err error) {
-	if err := mysql.DB.Where("id = ?", inDomain.ID).Save(inDomain).Error; err != nil {
+	if err := mysql.DB.Save(inDomain).Error; err != nil {
 		return nil, err
 	}
 	outDomain = inDomain
 	return
 }
 
+// SaveDomain 保存数据
+func SaveDomain(inDomain *Domain) (outDomain *Domain, err error) {
+	if err := mysql.DB.Save(inDomain).Error; err != nil {
+		return nil, err
+	}
+	outDomain = inDomain
+	return
+}
+
+// GetURLs GetURLs
+func GetURLs(inDomain *Domain) (outDomain *Domain, err error) {
+	if err = mysql.DB.Preload("URLs").Find(&inDomain).Error; err != nil {
+		return nil, err
+	}
+	return inDomain, nil
+}
+
 // DeleteDomainByID 通过ID删除多个
 func DeleteDomainByID(domainID uint) (ok bool, err error) {
 	//
-	if err := mysql.DB.Where("id = ?", domainID).Delete(&Domain{}).Error; err != nil {
+	err = mysql.DB.Transaction(func(tx *gorm.DB) error {
+		// 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）
+		if err := mysql.DB.Where("id = ?", domainID).Delete(&Domain{}).Error; err != nil {
+			return err
+		}
+		//
+		if ok, err := DeleteDomainURLByDomainID(domainID); !ok {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
 		return false, err
 	}
 	return true, nil

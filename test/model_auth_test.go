@@ -1,54 +1,43 @@
 package test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/bmizerany/assert"
 	"github.com/linqiurong2021/gin-arcgis/models"
+	"github.com/linqiurong2021/gin-arcgis/services"
 )
 
-func TestAuthPath(t *testing.T) {
-
-	path := models.Path{
-		URL: "http://dev.eginsoft.cn:6081",
-		Domains: []models.Domain{
-			{Name: "127.0.0.1", Note: "本地"},
-		},
+func TestAuth(t *testing.T) {
+	domainURL := []*models.DomainURL{
+		{URLID: 2, DomainID: 2},
+		{URLID: 1, DomainID: 2},
 	}
-	//
-	ok, err := models.AuthPath(&path)
+	// domainUrl = []*models.DomainURL
+	result, err := services.Auth(domainURL)
 	if err != nil {
-		fmt.Printf("\nError:\n%s\n", err.Error())
-		return
-	}
-	if !ok {
 		assert.Equal(t, 1, 0)
-	} else {
-		assert.Equal(t, 1, 1)
 	}
+	if len(result) > 0 {
+		assert.Equal(t, 1, 1)
+	} else {
 
+		assert.Equal(t, 1, 0)
+	}
 }
 
-func TestAuthDomain(t *testing.T) {
-
-	domain := models.Domain{
-		Name: "127.0.0.1",
-		Note: "本地",
-		Paths: []*models.Path{
-			{URL: "http://dev.eginsoft.cn:6080"},
-		},
-	}
-	//
-	ok, err := models.AuthDomain(&domain)
-	if err != nil {
-		fmt.Printf("\nError:\n%s\n", err.Error())
-		return
-	}
+func TestUnAuthByURLID(t *testing.T) {
+	ok, _ := services.UnAuthByDURLID(2)
 	if !ok {
 		assert.Equal(t, 1, 0)
-	} else {
-		assert.Equal(t, 1, 1)
 	}
+	assert.Equal(t, 1, 1)
+}
 
+func TestUnAuthByDomainID(t *testing.T) {
+	ok, _ := services.UnAuthByDomainID(1)
+	if !ok {
+		assert.Equal(t, 1, 0)
+	}
+	assert.Equal(t, 1, 1)
 }

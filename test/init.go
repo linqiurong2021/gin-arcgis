@@ -19,6 +19,6 @@ func init() {
 		return
 	}
 
-	mysql.DB.AutoMigrate(&models.Domain{}, &models.Path{})
-
+	mysql.DB.AutoMigrate(&models.Domain{}, &models.URL{}, &models.DomainURL{})
+	// mysql.DB.AutoMigrate(&models.Person{}, &models.Address{}, &models.PersonAddress{})
 }

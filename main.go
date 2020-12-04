@@ -34,7 +34,6 @@ func main() {
 	routers.InitRouters(engine)
 	// 模型绑定
 	// AutoMigrate 模型绑定
-	mysql.DB.AutoMigrate(&models.Domain{}, &models.Path{})
-
+	mysql.DB.AutoMigrate(&models.Domain{}, &models.URL{}, &models.DomainURL{})
 	engine.Run(fmt.Sprintf(":%#v", config.Conf.Port))
 }
