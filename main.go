@@ -5,9 +5,11 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	ginsession "github.com/go-session/gin-session"
 	"github.com/linqiurong2021/gin-arcgis/config"
 	"github.com/linqiurong2021/gin-arcgis/models"
 	"github.com/linqiurong2021/gin-arcgis/mysql"
+	"github.com/linqiurong2021/gin-arcgis/redis"
 	"github.com/linqiurong2021/gin-arcgis/routers"
 )
 
@@ -30,7 +32,13 @@ func main() {
 		fmt.Printf("init mysql failed, err:%v\n", err)
 		return
 	}
+
 	engine := gin.Default()
+	// redis 初始化
+	redis.InitRedisSession(config.Conf.RedisConfig)
+	
+	// 使用session需要先.New
+	engine.Use(ginsession.New())
 	routers.InitRouters(engine)
 	// 模型绑定
 	// AutoMigrate 模型绑定

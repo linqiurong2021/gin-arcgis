@@ -10,3 +10,4 @@ type AuthParams struct {
 	DomainParams
 	URL string `json:"url" bind:"required"`
 }
+

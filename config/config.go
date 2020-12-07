@@ -11,6 +11,8 @@ type AppConfig struct {
 	JWTSignKey         string `ini:"JWTSingKey"`
 	TokenExpireMinutes int64  `ini:"tokenExpireMinutes"`
 	*MySQLConfig       `ini:"mysql"`
+	*RedisConfig       `ini:"redis"`
+	*TokenCheckConfig  `ini:"token"`
 }
 
 // MySQLConfig 数据库配置项
@@ -23,10 +25,35 @@ type MySQLConfig struct {
 	Charset  string `ini:"charset"`
 }
 
+// RedisConfig redis配置文件
+type RedisConfig struct {
+	Host     string `ini:"host"`
+	Port     string `ini:"port"`
+	Password string `ini:"password"`
+	Database int    `ini:"database"`
+}
+
+// TokenCheckConfig 校验
+type TokenCheckConfig struct {
+	RedisCheck bool `int:"redisCheck"`
+}
+
 // Conf 配置
 var Conf = new(AppConfig)
 
+// RedisConf 配置
+var RedisConf = new(RedisConfig)
+
 // Init 初始化
 func Init(file string) error {
+	// err := ini.MapTo(Conf, file)
 	return ini.MapTo(Conf, file)
+	// if err != nil {
+	// 	return err
+	// }
+	// err = ini.MapTo(RedisConf, file)
+	// if err != nil {
+	// 	return err
+	// }
+	// return nil
 }

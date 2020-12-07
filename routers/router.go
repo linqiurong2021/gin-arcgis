@@ -13,15 +13,19 @@ func InitRouters(router *gin.Engine) {
 
 	arcgisGroup := v1Group.Group("/arcgis")
 	// 需要授权后才可以使用 如果未授权则不能使用
-	arcgisGroup.Use(middlewares.DomainCheck())
+	arcgisGroup.Use(middlewares.TokenCheck(), middlewares.DomainCheck())
 	// 参数校验
 	arcgisGroup.GET("", controller.QueryFeatures)
 	arcgisGroup.GET("/all", controller.QueryAllLayerFeatures)
 	arcgisGroup.PUT("", controller.UpdateFeatures)
 	arcgisGroup.POST("", controller.AddFeatures)
 	arcgisGroup.DELETE("", controller.DeleteFeatures)
-
+	// 
 	authDomainGroup := v1Group.Group("/auth")
+	authDomainGroup.Use(middlewares.TokenCheck(), middlewares.DomainCheck())
 	authDomainGroup.POST("", controller.Auth)
 	authDomainGroup.DELETE("", controller.UnAuth)
+	// Token
+	tokenGroup := v1Group.Group("/token")
+	tokenGroup.GET("", controller.GetToken)
 }
