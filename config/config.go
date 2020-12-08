@@ -41,19 +41,7 @@ type TokenCheckConfig struct {
 // Conf 配置
 var Conf = new(AppConfig)
 
-// RedisConf 配置
-var RedisConf = new(RedisConfig)
-
 // Init 初始化
 func Init(file string) error {
-	// err := ini.MapTo(Conf, file)
 	return ini.MapTo(Conf, file)
-	// if err != nil {
-	// 	return err
-	// }
-	// err = ini.MapTo(RedisConf, file)
-	// if err != nil {
-	// 	return err
-	// }
-	// return nil
 }

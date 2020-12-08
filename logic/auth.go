@@ -2,6 +2,7 @@ package logic
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,8 @@ import (
 func Auth(c *gin.Context) (ok bool, err error) {
 
 	var authParams dao.AuthParams
-	err = c.ShouldBindJSON(&authParams) // 绑定并校验
+	err = c.BindJSON(&authParams) // 绑定并校验
+	fmt.Printf("%s\n%s\n", authParams.Domain, authParams.URL)
 	// 参数校验判断
 	ok = validator.Validate(c, err)
 	if !ok {

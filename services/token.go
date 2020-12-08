@@ -1,14 +1,11 @@
 package services
 
 import (
-	"net/http"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/linqiurong2021/gin-arcgis/config"
-	"github.com/linqiurong2021/gin-arcgis/redis"
-	"github.com/linqiurong2021/gin-book-frontend/utils"
 )
 
 // Claims 自定义
@@ -45,10 +42,7 @@ func CreateToken(c *gin.Context, token *Token) (string, error) {
 	}
 	newToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	singString, err := newToken.SignedString(mySigningKey)
-	_, err = redis.Set(c, "token", singString)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, utils.ServerError(err.Error(), ""))
-	}
+
 	return singString, err
 }
 
