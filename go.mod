@@ -14,6 +14,7 @@ require (
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/linqiurong2021/gin-book-frontend v0.0.0-20201126080419-4d49abdace4e
+	github.com/linqiurong2021/go-service-register v0.0.0-20201210094557-dafb1fd4c7bb
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/ugorji/go v1.2.1 // indirect
@@ -23,5 +24,5 @@ require (
 	gopkg.in/ini.v1 v1.62.0
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gorm.io/driver/mysql v1.0.3
-	gorm.io/gorm v1.20.7
+	gorm.io/gorm v1.20.8
 )

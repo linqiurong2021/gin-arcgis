@@ -7,12 +7,14 @@ import (
 // AppConfig App配置项
 type AppConfig struct {
 	Release            bool   `ini:"release"`
-	Port               int    `ini:"port"`
+	Host               string `ini:"host"`
+	Port               uint   `ini:"port"`
 	JWTSignKey         string `ini:"JWTSingKey"`
 	TokenExpireMinutes int64  `ini:"tokenExpireMinutes"`
 	*MySQLConfig       `ini:"mysql"`
 	*RedisConfig       `ini:"redis"`
 	*TokenCheckConfig  `ini:"token"`
+	*RegisterServer    `ini:"register"`
 }
 
 // MySQLConfig 数据库配置项
@@ -36,6 +38,13 @@ type RedisConfig struct {
 // TokenCheckConfig 校验
 type TokenCheckConfig struct {
 	RedisCheck bool `int:"redisCheck"`
+}
+
+// RegisterServer 注册服务地址
+type RegisterServer struct {
+	Host string `ini:"host"`
+	Port uint   `ini:"port"`
+	URL  string `ini:"url"`
 }
 
 // Conf 配置
